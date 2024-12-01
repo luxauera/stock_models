@@ -2,21 +2,22 @@
 import pandas as pd
 from arch import arch_model
 from assets.PostgresManager import PostgresModel
-from warnings import filterwarnings 
+from warnings import filterwarnings
 filterwarnings("ignore")
 
 
 class GarchModel(PostgresModel):
-    def __init__(self , schema , table_name , end_date=None, target_column = "Adj Close"):
+    def __init__(self, schema, table_name, end_date=None, target_column="Adj Close"):
         super().__init__()
         self.table_name = table_name
         self.schema = schema
         self.table_name = table_name
         self.target_column = target_column
-        self.query = rf"""SELECT "Date", "Open", "High", "Low", "Close", "Adj Close", "Volume" FROM {self.schema}."{self.table_name}";"""
+        self.query = rf"""SELECT * FROM {self.schema}."{self.table_name}";"""
         self.end_date = end_date
         self.data = self.fetch_data()
         self.predicted_price = self.predict_price()
+        self.last_price = self.data[self.target_column].iloc[-1]
 
     def fetch_data(self):
         if self.end_date is not None:
@@ -33,6 +34,6 @@ class GarchModel(PostgresModel):
         forecast = fitted_model.forecast(horizon=1, reindex=False)
         predicted_return = forecast.mean.iloc[-1, 0]
         predicted_variance = forecast.variance.iloc[-1, 0]
-        predicted_price = self.data[self.target_column].iloc[-1] * (1 + predicted_return)
+        predicted_price = self.data[self.target_column].iloc[-1] * \
+            (1 + predicted_return)
         return predicted_price
-
