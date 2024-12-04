@@ -3,13 +3,13 @@ import pandas as pd
 from arch import arch_model
 from assets.PostgresManager import PostgresModel
 from warnings import filterwarnings
+from datetime import datetime
 filterwarnings("ignore")
 
 
 class GarchModel(PostgresModel):
     def __init__(self, schema, table_name, end_date=None, target_column="Adj Close"):
         super().__init__()
-        self.table_name = table_name
         self.schema = schema
         self.table_name = table_name
         self.target_column = target_column
@@ -18,6 +18,8 @@ class GarchModel(PostgresModel):
         self.data = self.fetch_data()
         self.predicted_price = self.predict_price()
         self.last_price = self.data[self.target_column].iloc[-1]
+        self.model_date = datetime.now()
+        self.data_max_date = self.data.index.max()
 
     def fetch_data(self):
         if self.end_date is not None:
