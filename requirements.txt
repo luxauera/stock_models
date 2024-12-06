@@ -41,7 +41,6 @@ patsy==1.0.1
 pexpect==4.9.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.48
-protobuf==5.29.0
 psutil==6.1.0
 psycopg2-binary==2.9.10
 ptyprocess==0.7.0

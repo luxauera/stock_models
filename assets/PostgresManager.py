@@ -36,7 +36,5 @@ class PostgresModel:
                 connection.execute(
                     text(f"CREATE SCHEMA IF NOT EXISTS {schema_name};"))
                 connection.commit()
-
-            print(f"Schema '{schema_name}' created or already exists.")
         except Exception as e:
             print(f"Failed to create schema '{schema_name}':", e)
