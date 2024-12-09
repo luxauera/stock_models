@@ -8,11 +8,11 @@ import pandas as pd
 
 class PostgresModel:
     def __init__(self):
-        self.DB_NAME = 'hcap' #os.environ['DB_NAME']
-        self.DB_USER = 'postgres' #os.environ['DB_USER']
-        self.DB_PASSWORD = 'mysecretpassword' #os.environ['DB_PASSWORD']
-        self.DB_PORT = 5432 #os.environ['DB_PORT']
-        self.DB_HOST = 'main-desktop' #os.environ['DB_HOST']
+        self.DB_NAME = os.environ['DB_NAME']
+        self.DB_USER = os.environ['DB_USER']
+        self.DB_PASSWORD = os.environ['DB_PASSWORD']
+        self.DB_PORT = os.environ['DB_PORT']
+        self.DB_HOST = os.environ['DB_HOST']
 
         self.engine = create_engine(
             f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}")

@@ -3,7 +3,8 @@ from assets.PostgresManager import PostgresModel
 from assets.QueryManager import QueryModel
 from assets.Statics import Stock_Stats
 from assets.GARCHModel import GarchModel
-
+import time
+import os
 
 dbmodel = PostgresModel()
 querymodel = QueryModel()
@@ -37,8 +38,15 @@ def Stats_Process():
             except Exception as e:
                 print(e)
 
+def Model_Process():
+    while True:
+        time.sleep(int(os.environ["RUN_PERIOD"]))
+        Garch_Process()
+        Stats_Process()
+
+
+
 if __name__ == "__main__":
-    Garch_Process()
-    Stats_Process()
+    Model_Process()
 else:
     pass
