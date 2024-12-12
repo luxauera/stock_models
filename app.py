@@ -3,6 +3,7 @@ from assets.PostgresManager import PostgresModel
 from assets.QueryManager import QueryModel
 from assets.Statics import Stock_Stats
 from assets.GARCHModel import GarchModel
+from assets.SARIMAModel import ARIMAModel
 import time
 import os
 
@@ -38,11 +39,29 @@ def Stats_Process():
             except Exception as e:
                 print(e)
 
+
+def Sarima_Process():
+    for schema in querymodel.sub_tables_dict.keys():
+        created_schema_name = "arima" + schema
+        dbmodel.create_schema(created_schema_name)
+        for table in querymodel.sub_tables_dict[schema]:
+            try:
+                ARIMA = ARIMAModel(schema=schema, table_name=table)
+                values = [ARIMA.table_name, ARIMA.predicted_price,ARIMA.last_price, ARIMA.model_date, ARIMA.data_max_date]
+                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date"]
+                df = pd.DataFrame([values], columns=columns)
+                df.to_sql(table, con=dbmodel.engine, schema=created_schema_name, if_exists="append", index=False)
+            except Exception as e:
+                print(e)
+
+
 def Model_Process():
     while True:
-        time.sleep(int(os.environ["RUN_PERIOD"]))
         Garch_Process()
         Stats_Process()
+        Sarima_Process()
+        time.sleep(int(os.environ["RUN_PERIOD"]))
+
 
 
 
@@ -50,3 +69,5 @@ if __name__ == "__main__":
     Model_Process()
 else:
     pass
+
+

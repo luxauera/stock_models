@@ -25,7 +25,7 @@ class LSTMModeller(PostgresModel):
         self.model = self.create_model()
         self.predicted_price = self.predict_price()
         self.last_price = self.data[self.target_column].iloc[-1]
-        self.predicted_price = self.predict_price()
+
 
     def create_model(self):
         data = self.data[self.target_column].values.reshape(-1, 1)
