@@ -4,6 +4,7 @@ from assets.QueryManager import QueryModel
 from assets.Statics import Stock_Stats
 from assets.GARCHModel import GarchModel
 from assets.SARIMAModel import ARIMAModel
+from assets.LYAPONOVModel import LyapunovModel
 import time
 import os
 
@@ -18,8 +19,8 @@ def Garch_Process():
         for table in querymodel.sub_tables_dict[schema]:
             try:
                 GARCH = GarchModel(schema=schema, table_name=table)
-                values = [GARCH.table_name, GARCH.predicted_price,GARCH.last_price, GARCH.model_date, GARCH.data_max_date]
-                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date"]
+                values = [GARCH.table_name, GARCH.predicted_price,GARCH.last_price, GARCH.model_date, GARCH.data_max_date , GARCH.weekly_predicted_price, GARCH.weekly_last_price, GARCH.monthly_predicted_price, GARCH.monthly_last_price]
+                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date" , "weekly_predicted_price", "weekly_last_price", "monthly_predicted_price", "monthly_last_price"]
                 df = pd.DataFrame([values], columns=columns)
                 df.to_sql(table, con=dbmodel.engine, schema=created_schema_name, if_exists="append", index=False)
             except Exception as e:
@@ -47,8 +48,22 @@ def Sarima_Process():
         for table in querymodel.sub_tables_dict[schema]:
             try:
                 ARIMA = ARIMAModel(schema=schema, table_name=table)
-                values = [ARIMA.table_name, ARIMA.predicted_price,ARIMA.last_price, ARIMA.model_date, ARIMA.data_max_date]
-                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date"]
+                values = [ARIMA.table_name, ARIMA.predicted_price,ARIMA.last_price, ARIMA.model_date, ARIMA.data_max_date , ARIMA.weekly_predicted_price, ARIMA.weekly_last_price, ARIMA.monthly_predicted_price, ARIMA.monthly_last_price]
+                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date", "weekly_predicted_price", "weekly_last_price", "monthly_predicted_price", "monthly_last_price"]
+                df = pd.DataFrame([values], columns=columns)
+                df.to_sql(table, con=dbmodel.engine, schema=created_schema_name, if_exists="append", index=False)
+            except Exception as e:
+                print(e)
+
+def Lyaponob_Process():
+    for schema in querymodel.sub_tables_dict.keys():
+        created_schema_name = "lyapunov" + schema
+        dbmodel.create_schema(created_schema_name)
+        for table in querymodel.sub_tables_dict[schema]:
+            try:
+                LYAPONOV = LyapunovModel(schema=schema, table_name=table)
+                values = [LYAPONOV.table_name, LYAPONOV.predicted_price,LYAPONOV.last_price, LYAPONOV.model_date, LYAPONOV.data_max_date , LYAPONOV.weekly_predicted_price, LYAPONOV.weekly_last_price, LYAPONOV.monthly_predicted_price, LYAPONOV.monthly_last_price]
+                columns = ["table_name", "predicted_price", "last_price", "model_date", "data_max_date", "weekly_predicted_price", "weekly_last_price", "monthly_predicted_price", "monthly_last_price"]
                 df = pd.DataFrame([values], columns=columns)
                 df.to_sql(table, con=dbmodel.engine, schema=created_schema_name, if_exists="append", index=False)
             except Exception as e:
@@ -60,6 +75,7 @@ def Model_Process():
         Garch_Process()
         Stats_Process()
         Sarima_Process()
+        Lyaponob_Process()
         time.sleep(int(os.environ["RUN_PERIOD"]))
 
 
