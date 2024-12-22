@@ -1,4 +1,3 @@
-import pandas as pd
 from assets.PostgresManager import PostgresModel
 from assets.QueryManager import QueryModel
 from assets.Statics import Stock_Stats
@@ -7,6 +6,9 @@ from assets.SARIMAModel import ARIMAModel
 from assets.LYAPONOVModel import LyapunovModel
 import time
 import os
+from datetime import datetime
+import pandas as pd
+
 
 dbmodel = PostgresModel()
 querymodel = QueryModel()
@@ -72,11 +74,17 @@ def Lyaponob_Process():
 
 def Model_Process():
     while True:
-        Garch_Process()
-        Stats_Process()
-        Sarima_Process()
-        Lyaponob_Process()
-        time.sleep(int(os.environ["RUN_PERIOD"]))
+        hour = datetime.now().strftime("%H:%M")
+        print("Model Process is running " , hour)
+        time.sleep(1)
+        if hour == os.environ["RUN_PERIOD"]:
+            print("Model Process is initiated")
+            Garch_Process()
+            Stats_Process()
+            Sarima_Process()
+            Lyaponob_Process()
+            print("Model Process is completed")
+
 
 
 
