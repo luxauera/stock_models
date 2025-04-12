@@ -5,12 +5,13 @@ WORKDIR /financial_models
 COPY . . 
 
 
-ENV  DB_NAME=hcap
-ENV  DB_USER=hyenauser
-ENV  DB_PASSWORD=hyena_admin
-ENV  DB_PORT=5432
-ENV  DB_HOST=172.17.0.1
-ENV  RUN_PERIOD=17:00
+ENV  DB_NAME=
+ENV  DB_USER=
+ENV  DB_PASSWORD=
+ENV  DB_PORT=
+ENV  DB_HOST=
+ENV  RUN_PERIOD= 
+#RUN_PERIOD=17:10
 
 RUN pip install -r requirements.txt
 
